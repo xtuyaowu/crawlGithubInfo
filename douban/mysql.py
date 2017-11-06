@@ -44,10 +44,44 @@ class mySQL(object):
 
             # with connection.cursor() as cursor:
             #     # Read a single record
-            #     sql = "SELECT `idstudy`, `age` FROM `study` WHERE `age`=%s"
+            #     sql = "SELECT `idstudy`, `age` FROM `UserInfo` WHERE `age`=%s"
             #     cursor.execute(sql, ('30',))
             #     result = cursor.fetchone()
             #     print(result)
+
+            with connection.cursor() as cursor:
+                # Read a single record
+                sql = "SELECT * FROM `GithubUserInfo` "
+                cursor.execute(sql, ())
+                result = cursor.fetchall()
+                for row in result:
+                    tailURL = row["TailURL"]
+                    email = row["Email"]
+                    area = row["Area"]
+                    like = row["Like"]
+                    repositor = row["Repositories"]
+                    stars = row["Stars"]
+                    followers = row["Followers"]
+                    following = row["Following"]
+                    organize = row["Organize"]
+                    personURL = row["PersonalURL"]
+                    try:
+                        with connection.cursor() as cursor:
+                            cursor.execute("INSERT INTO `UserInfo` "
+                                           "(`TailURL`, `Email`, `Area`, `Like`, `Repositories`, `Stars`, `Followers`, `Following`, `Organize`, `PersonalURL`) "
+                                           "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                           (
+                                               tailURL, email, area, like, repositor, stars, followers, following,
+                                               organize,
+                                               personURL))
+                            connection.commit()
+                    except (TypeError, ValueError) as e:
+                        print("错误123")
+                        print(e)
+                    except:
+                        print("12")
+                print(result)
+
 
 #'doubanFile.csv',
 
@@ -64,37 +98,37 @@ class mySQL(object):
                           'doubanFile2017-9-10.csv',
                           'doubanFile2017-9-11.csv']
 
-            for element in pathArray:
-                completeURL = '/Users/apple/Desktop/采集到的邮箱/' +  element
-                print(completeURL)
-                with open(completeURL) as csvfile:
-                    reader = csv.DictReader(csvfile)
-                    for row in reader:
-                        tailURL = self.stringRemoveNull(row['Name'])
-                        email = self.stringRemoveNull(row['Email'])
-                        area = self.stringRemoveNull(row['Country'])
-                        like = self.stringRemoveNull(row['Like'])
-                        repositor = self.stringRemoveNull(row['Repositories'])
-                        stars = self.stringRemoveNull(row['Stars'])
-                        followers = self.stringRemoveNull(row['Followers'])
-                        following = self.stringRemoveNull(row['Following'])
-                        organize = self.stringRemoveNull(row['Organize'])
-                        personURL = self.stringRemoveNull(row['PersonalURL'])
-                        try:
-                            with connection.cursor() as cursor:
-                                cursor.execute("INSERT INTO `GithubUserInfo` "
-                                               "(`TailURL`, `Email`, `Area`, `Like`, `Repositories`, `Stars`, `Followers`, `Following`, `Organize`, `PersonalURL`) "
-                                               "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                               (
-                                                   tailURL, email, area, like, repositor, stars, followers, following,
-                                                   organize,
-                                                   personURL))
-                                connection.commit()
-                        except (TypeError, ValueError) as e:
-                            print("错误123")
-                            print(e)
-                        except:
-                            print("12")
+            # for element in pathArray:
+            #     completeURL = '/Users/apple/Desktop/采集到的邮箱/' +  element
+            #     print(completeURL)
+            #     with open(completeURL) as csvfile:
+            #         reader = csv.DictReader(csvfile)
+            #         for row in reader:
+            #             tailURL = self.stringRemoveNull(row['Name'])
+            #             email = self.stringRemoveNull(row['Email'])
+            #             area = self.stringRemoveNull(row['Country'])
+            #             like = self.stringRemoveNull(row['Like'])
+            #             repositor = self.stringRemoveNull(row['Repositories'])
+            #             stars = self.stringRemoveNull(row['Stars'])
+            #             followers = self.stringRemoveNull(row['Followers'])
+            #             following = self.stringRemoveNull(row['Following'])
+            #             organize = self.stringRemoveNull(row['Organize'])
+            #             personURL = self.stringRemoveNull(row['PersonalURL'])
+            #             try:
+            #                 with connection.cursor() as cursor:
+            #                     cursor.execute("INSERT INTO `GithubUserInfo` "
+            #                                    "(`TailURL`, `Email`, `Area`, `Like`, `Repositories`, `Stars`, `Followers`, `Following`, `Organize`, `PersonalURL`) "
+            #                                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            #                                    (
+            #                                        tailURL, email, area, like, repositor, stars, followers, following,
+            #                                        organize,
+            #                                        personURL))
+            #                     connection.commit()
+            #             except (TypeError, ValueError) as e:
+            #                 print("错误123")
+            #                 print(e)
+            #             except:
+            #                 print("12")
         finally:
             print("重复项")
             #connection.close()
